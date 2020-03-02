@@ -27,7 +27,7 @@ yolo_video.py Video display
 yolo_video_with_webcam.py - webcam or file source. Option to write to hard drive
 ```
 And you'll need the training data.  It's 242 MB and too large for GitHub:
-https://www.dropbox.com/s/0pq7le6fwtbarkc/yolov3.weights?dl=1
+https://www.dropbox.com/s/uf00d4ov6fmw0he/yolov3.weights?dl=1
 
 ## Learn More
 

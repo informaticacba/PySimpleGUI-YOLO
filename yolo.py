@@ -14,8 +14,8 @@ import argparse
 import time
 import cv2
 import os
-import PySimpleGUIQt as sg
-
+import PySimpleGUI as sg
+sg.theme('light green')
 layout = 	[
 		[sg.Text('YOLO')],
 		[sg.Text('Path to image'), sg.In(r'C:/Python/PycharmProjects/YoloObjectDetection/images/baggage_claim.jpg',size=(40,1), key='image'), sg.FileBrowse()],
@@ -25,13 +25,13 @@ layout = 	[
 		[sg.OK(), sg.Cancel(), sg.Stretch()]
 			]
 
-win = sg.Window('YOLO',
-				default_element_size=(14,1),
-				text_justification='right',
-				auto_size_text=False).Layout(layout)
-event, values = win.Read()
+window = sg.Window('YOLO', layout,
+                   default_element_size=(14,1),
+                   text_justification='right',
+                   auto_size_text=False)
+event, values = window.read()
 args = values
-win.Close()
+window.close()
 # construct the argument parse and parse the arguments
 # ap = argparse.ArgumentParser()
 # ap.add_argument("-i", "--image", required=True,
@@ -71,7 +71,7 @@ image = cv2.imread(args["image"])
 
 # determine only the *output* layer names that we need from YOLO
 ln = net.getLayerNames()
-ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+ln = [ln[i - 1] for i in net.getUnconnectedOutLayers()]
 
 # construct a blob from the input image and then perform a forward
 # pass of the YOLO object detector, giving us our bounding boxes and
@@ -153,12 +153,12 @@ layout = 	[
 		[sg.OK(), sg.Cancel()]
 			]
 
-win = sg.Window('YOLO',
-				default_element_size=(14,1),
-				text_justification='right',
-				auto_size_text=False).Layout(layout)
-event, values = win.Read()
-win.Close()
+window = sg.Window('YOLO',
+                   default_element_size=(14,1),
+                   text_justification='right',
+                   auto_size_text=False).Layout(layout)
+event, values = window.Read()
+window.Close()
 
 # cv2.imshow("Image", image)
 cv2.waitKey(0)

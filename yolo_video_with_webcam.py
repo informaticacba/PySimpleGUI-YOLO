@@ -12,7 +12,7 @@ import PySimpleGUI as sg
 i_vid = r'videos\car_chase_01.mp4'
 o_vid = r'output\car_chase_01_out.mp4'
 y_path = r'yolo-coco'
-sg.ChangeLookAndFeel('LightGreen')
+sg.theme('LightGreen')
 layout = 	[
 		[sg.Text('YOLO Video Player', size=(18,1), font=('Any',18),text_color='#1c86ee' ,justification='left')],
 		[sg.Text('Path to input video'), sg.In(i_vid,size=(40,1), key='input'), sg.FileBrowse()],
@@ -29,7 +29,7 @@ win = sg.Window('YOLO Video',
 				default_element_size=(21,1),
 				text_justification='right',
 				auto_size_text=False).Layout(layout)
-event, values = win.Read()
+event, values = win.read()
 if event is None or event =='Cancel':
 	exit()
 write_to_disk = values['_DISK_']
@@ -60,7 +60,8 @@ configPath = os.path.sep.join([args["yolo"], "yolov3.cfg"])
 print("[INFO] loading YOLO from disk...")
 net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 ln = net.getLayerNames()
-ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+# ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]        # old code changed on Feb-4-2022
+ln = [ln[i - 1] for i in net.getUnconnectedOutLayers()]
 
 # initialize the video stream, pointer to output video file, and
 # frame dimensions
@@ -199,15 +200,15 @@ while True:
 			 sg.Slider(range=(0, 1), orientation='h', resolution=.1, default_value=.3, size=(15, 15), key='threshold')],
 			[sg.Exit()]
 		]
-		win = sg.Window('YOLO Output',
+		win = sg.Window('YOLO Output', layout,
 						default_element_size=(14, 1),
 						text_justification='right',
-						auto_size_text=False).Layout(layout).Finalize()
-		image_elem = win.FindElement('_IMAGE_')
+						auto_size_text=False, finalize=True)
+		image_elem = win['_IMAGE_']
 	else:
 		image_elem.Update(data=imgbytes)
 
-	event, values = win.Read(timeout=0)
+	event, values = win.read(timeout=0)
 	if event is None or event == 'Exit':
 		break
 	gui_confidence = values['confidence']

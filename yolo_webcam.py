@@ -1,6 +1,6 @@
 """
     Demo of YOLO object detection with a WebCam using PySimpleGUI
-    Copyright 2019, 2020 PySimpleGUI
+    Copyright 2019, 2020, 2022 PySimpleGUI
     www.PySimpleGUI.com
     Licensed under LGPL3+
     The YOLO detection code was provided courtsey of Dr. Adrian Rosebrock of the pyimagesearch organization.
@@ -42,7 +42,8 @@ sg.popup_quick_message('Loading YOLO weights from disk.... one moment...', backg
 
 net = cv2.dnn.readNetFromDarknet(configPath, weightsPath)
 ln = net.getLayerNames()
-ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]
+# ln = [ln[i[0] - 1] for i in net.getUnconnectedOutLayers()]        # old code changed on Feb-4-2022
+ln = [ln[i - 1] for i in net.getUnconnectedOutLayers()]
 
 # initialize the video stream, pointer to output video file, and
 # frame dimensions
@@ -140,16 +141,16 @@ while True:
              sg.Slider(range=(0, 10), orientation='h', resolution=1, default_value=3, size=(15, 15), key='threshold')],
             [sg.Exit()]
         ]
-        win = sg.Window('YOLO Webcam Demo', layout, default_element_size=(14, 1), text_justification='right', auto_size_text=False, finalize=True)
-        image_elem = win['_IMAGE_']
+        window = sg.Window('YOLO Webcam Demo', layout, default_element_size=(14, 1), text_justification='right', auto_size_text=False, finalize=True)
+        image_elem = window['_IMAGE_']
     else:
         image_elem.update(data=imgbytes)
 
-    event, values = win.read(timeout=0)
+    event, values = window.read(timeout=0)
     if event is None or event == 'Exit':
         break
     gui_confidence = int(values['confidence']) / 10
     gui_threshold = int(values['threshold']) / 10
 
 print("[INFO] cleaning up...")
-win.close()
+window.close()

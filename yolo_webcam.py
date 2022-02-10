@@ -128,13 +128,13 @@ while True:
             cv2.putText(frame, text, (x, y - 5),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
-    imgbytes = cv2.imencode('.png', frame)[1].tobytes()
+    imgbytes = cv2.imencode('.ppm', frame)[1].tobytes()
     # ---------------------------- THE GUI ----------------------------
     if not win_started:
         win_started = True
         layout = [
             [sg.Text('Yolo Playback in PySimpleGUI Window', size=(30, 1))],
-            [sg.Image(data=imgbytes, key='_IMAGE_')],
+            [sg.Graph((W, H), (0,0), (W,H), key='-GRAPH-')],
             [sg.Text('Confidence'),
              sg.Slider(range=(0, 10), orientation='h', resolution=1, default_value=5, size=(15, 15), key='confidence'),
              sg.Text('Threshold'),
@@ -142,9 +142,10 @@ while True:
             [sg.Exit()]
         ]
         window = sg.Window('YOLO Webcam Demo', layout, default_element_size=(14, 1), text_justification='right', auto_size_text=False, finalize=True)
-        image_elem = window['_IMAGE_']
+        image_elem = window['-GRAPH-']     # type: sg.Graph
     else:
-        image_elem.update(data=imgbytes)
+        image_elem.erase()
+        image_elem.draw_image(data=imgbytes, location=(0, H))
 
     event, values = window.read(timeout=0)
     if event is None or event == 'Exit':
